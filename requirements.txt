@@ -1,0 +1,12 @@
+earthengine_api==0.1.419
+faiss_cpu==1.10.0
+folium==0.17.0
+llama_index==0.12.28
+matplotlib==3.8.4
+numpy==2.2.4
+Pillow==11.1.0
+protobuf==6.30.2
+python-dotenv==1.1.0
+streamlit==1.36.0
+streamlit_folium==0.23.2
+torch==2.2.2

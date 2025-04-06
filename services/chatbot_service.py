@@ -5,12 +5,9 @@ import faiss
 import torch
 import google.generativeai as genai
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-from dotenv import load_dotenv
+import streamlit as st
 
-load_dotenv()
-
-
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))  # gemini api key
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])  # gemini api key
 
 INDEX_PATH = r"C:\Palak\git\precision_agriculture\the_code\Krishi_Vyakriti\services\faiss_index(1) (1).index"
 CHUNKS_PATH = r"C:\Palak\git\precision_agriculture\the_code\Krishi_Vyakriti\services\text_chunks.pkl"

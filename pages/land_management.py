@@ -10,13 +10,5 @@ def land_management_page():
     st.subheader("Your Agricultural Land")
     st.markdown("coming soon")
     
-    # user_coords = get_user_coords(st.session_state.get("username", ""))
-    # m = create_map(zoom_start=12)
-    
-    # # Add user's land areas to the map if available
-    # if user_coords:
-    #     st.success(f"Showing {len(user_coords)} registered land area(s)")
-    
-    # st_folium(m, width="100%", height=500)
     
     back_to_dashboard()
