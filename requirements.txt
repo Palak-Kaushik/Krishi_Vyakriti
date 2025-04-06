@@ -9,6 +9,5 @@ folium
 earthengine-api	
 geemap	
 protobuf	
-pickle5	
 matplotlib
 python-dotenv
