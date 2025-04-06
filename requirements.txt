@@ -12,3 +12,4 @@ protobuf
 matplotlib
 python-dotenv
 llama-index-embeddings-huggingface
+langchain
