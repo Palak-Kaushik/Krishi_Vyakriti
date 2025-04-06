@@ -38,6 +38,7 @@ def chatbot_page():
         
         response_text = generate_response(user_input)
         
+        # Add assistant response
         st.session_state.chat_messages.append({"role": "assistant", "content": response_text})
         st.rerun()
     
