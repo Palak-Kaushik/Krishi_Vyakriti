@@ -12,7 +12,7 @@ def dashboard_page():
     if st.button("View Agricultural Insights", key="insights_main_btn"):
         navigate_to("Insights")
 
-    st.markdown("### Information Center?")
+    st.markdown("### Information Center")
     if st.button("Agricultural Assistant", key="chat_btn"):
         navigate_to("Chatbot Assistant")
     
