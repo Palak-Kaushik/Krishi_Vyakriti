@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 import pickle
 import numpy as np
 import faiss
@@ -7,22 +8,25 @@ from sentence_transformers import SentenceTransformer
 import google.generativeai as genai
 import gradio as gr
 
+# === Load environment variables from .env file ===
+load_dotenv()
+
 # === Configuration ===
 INDEX_PATH = "/home/sanjyot/Desktop/Vyakriti2.0-SIH-2024-1563/Krishi_Vyakriti/services/faiss_index.index"
 CHUNKS_PATH = "/home/sanjyot/Desktop/Vyakriti2.0-SIH-2024-1563/Krishi_Vyakriti/services/text_chunks.pkl"
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 TOP_K = 3
-GENAI_API_KEY = "AIzaSyCHBfm_5boUJvTh7n4VdkYMzTA4dMveLRo"  #gemini api key
-# === Load Gemini
+GENAI_API_KEY = os.getenv("GOOGLE_API_KEY")  # Loaded securely
+
+# === Initialize Gemini ===
 genai.configure(api_key=GENAI_API_KEY)
 
-# === Load embedding model (just once)
+# === Load embedding model ===
 device = "cuda" if torch.cuda.is_available() else "cpu"
 embedding_model = SentenceTransformer(MODEL_NAME, device=device)
 gen_model = genai.GenerativeModel("gemini-1.5-pro")
 
-
-# === Load FAISS vector DB
+# === Load FAISS Vector DB ===
 def load_vector_database():
     if os.path.exists(INDEX_PATH) and os.path.exists(CHUNKS_PATH):
         index = faiss.read_index(INDEX_PATH)
@@ -32,15 +36,13 @@ def load_vector_database():
     else:
         raise FileNotFoundError("Vector DB files not found. Please generate them before running the chatbot.")
 
-
-# === Retrieve Relevant Chunks
+# === Retrieve Relevant Chunks ===
 def retrieve_chunks(query, index, chunks, top_k=TOP_K):
     query_embedding = embedding_model.encode(query, normalize_embeddings=True).reshape(1, -1)
     distances, indices = index.search(query_embedding, top_k)
     return [chunks[i] for i in indices[0]]
 
-
-# === Generate response using Gemini
+# === Generate Gemini Response ===
 def generate_response_with_gemini(query, context):
     prompt = (
         "You are an expert in precision agriculture. Use the context below to answer the query.\n"
@@ -52,16 +54,14 @@ def generate_response_with_gemini(query, context):
     response = gen_model.generate_content(prompt)
     return response.text.strip()
 
-
-# === Full Query Handler
+# === Full RAG Pipeline ===
 def generate_response(query):
     index, chunks = load_vector_database()
     relevant_chunks = retrieve_chunks(query, index, chunks)
     context = "\n---\n".join(relevant_chunks)
     return generate_response_with_gemini(query, context)
 
-
-# === Suggested Questions
+# === Suggested Questions ===
 def get_suggested_questions():
     return [
         "What is precision agriculture?",
@@ -71,12 +71,11 @@ def get_suggested_questions():
         "What sensors are used in smart farming?"
     ]
 
-
-# === Gradio Chat UI
+# === Gradio Chatbot UI ===
 def run_chatbot():
     with gr.Blocks(title="Precision Agriculture Chatbot") as demo:
         gr.Markdown("# 🌱 Precision Agriculture Gemini Chatbot")
-        gr.Markdown("Ask about farming practices, soil health, irrigation,and more!")
+        gr.Markdown("Ask about farming practices, soil health, irrigation, and more!")
 
         chatbot = gr.Chatbot()
         msg = gr.Textbox(placeholder="Type your question here...")
@@ -95,7 +94,6 @@ def run_chatbot():
 
     demo.launch(share=True, debug=True)
 
-
-# === Run the chatbot when the script is executed
+# === Run the chatbot ===
 if __name__ == "__main__":
     run_chatbot()
