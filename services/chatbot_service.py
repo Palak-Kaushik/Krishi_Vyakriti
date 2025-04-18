@@ -1,22 +1,21 @@
 import os
 from dotenv import load_dotenv
 import pickle
-import numpy as np
 import faiss
 import torch
 from sentence_transformers import SentenceTransformer
 import google.generativeai as genai
 import gradio as gr
-
+import streamlit as st
 # === Load environment variables from .env file ===
 load_dotenv()
 
 # === Configuration ===
-INDEX_PATH = "/home/sanjyot/Desktop/Vyakriti2.0-SIH-2024-1563/Krishi_Vyakriti/services/faiss_index.index"
-CHUNKS_PATH = "/home/sanjyot/Desktop/Vyakriti2.0-SIH-2024-1563/Krishi_Vyakriti/services/text_chunks.pkl"
+INDEX_PATH = "./services/faiss_index.index"
+CHUNKS_PATH = "./services/text_chunks.pkl"
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 TOP_K = 3
-GENAI_API_KEY = os.getenv("GOOGLE_API_KEY")  # Loaded securely
+GENAI_API_KEY = st.secrets('GEMINI_API_KEY')
 
 # === Initialize Gemini ===
 genai.configure(api_key=GENAI_API_KEY)
